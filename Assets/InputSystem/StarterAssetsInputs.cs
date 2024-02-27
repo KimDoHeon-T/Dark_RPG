@@ -54,7 +54,6 @@ namespace StarterAssets
 
         public void AttackInput(bool newAttackState)
         {
-            Debug.Log("진우형 지건마렵네");
             attack = newAttackState;
         }
 
