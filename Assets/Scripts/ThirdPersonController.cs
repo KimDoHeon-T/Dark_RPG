@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
 #endif
@@ -88,6 +89,7 @@ namespace StarterAssets
         private float _terminalVelocity = 53.0f;
         //내꺼
         private float _atkCoolTime = 0.0f;
+        private int _atkComSeq = 0;
 
         // timeout deltatime
         private float _jumpTimeoutDelta;
@@ -100,7 +102,9 @@ namespace StarterAssets
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
         //내꺼
-        private int _animIDAttack_1;
+        public List<int> atkCombo = new List<int>();
+        private int _animIDSwdAttack_1;
+        private int _animIDSwdAttack_2;
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
         private PlayerInput _playerInput;
@@ -129,6 +133,7 @@ namespace StarterAssets
 
         private void Awake()
         {
+
             // get a reference to our main camera
             if (_mainCamera == null)
             {
@@ -149,7 +154,8 @@ namespace StarterAssets
 #endif
 
             AssignAnimationIDs();
-
+            atkCombo.Add(_animIDSwdAttack_1);
+            atkCombo.Add(_animIDSwdAttack_2);
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
@@ -157,26 +163,61 @@ namespace StarterAssets
 
         private void Update()
         {
-            JumpAndGravity();
-            GroundedCheck();
-            Move();
-            Attack();
+            if (_atkCoolTime > 0)
+            {
+                GroundedCheck();
+                Attack();
+            }
+            else
+            {
+                JumpAndGravity();
+                GroundedCheck();
+                Move();
+                Attack();
+            }
         }
-
         private void Attack()
         {
-            if (_atkCoolTime > 0) { _atkCoolTime -= Time.deltaTime; }
-            _hasAnimator = TryGetComponent(out _animator);
+            if (_atkCoolTime > 0)//공격이 실행 중에
+            {
+                if (_atkComSeq == 1)
+                {
+                    _animator.SetBool(atkCombo[0], false);
+                }
+                _atkCoolTime -= Time.deltaTime;//쿨타임이 줄고
+                if (_input.attack)//추가 공격 입력 시, 콤보루트 애니메이션 활성화
+                {
+                    _animator.SetBool(atkCombo[_atkComSeq], true);
+                }
+            }
+            else//공격이 실행 중이지 않을 때
+            {
+                if (_animator.GetBool(atkCombo[_atkComSeq]))//다음 동작이 열려있을 때
+                {
+                    _animator.SetBool(atkCombo[_atkComSeq], false);//우선 끄고
+                    _atkCoolTime = 2;//쿨타임 돌리고
+                    if (_atkComSeq == atkCombo.Count - 1)//마지막 콤보라면 처음으로, 아니라면 다음 공격으로
+                    {
+                        _atkComSeq = 0;
+                    }
+                    else
+                    {
+                        _atkComSeq++;
+                    }
+                }
+                else//_atkCombo[_aktComSeq] == false일 때. 즉, 다음 공격 미입력 시
+                {
+                    _atkComSeq = 0;
+                }
 
-            if (_input.attack)
-            {
+                if (_input.attack && Grounded)//첫 공격 발생, 땅에 있을 때만
+                {
+                    _animator.SetBool(atkCombo[_atkComSeq], true);
+                    _atkCoolTime = 2;
+                    _atkComSeq++;
+                }
             }
-            if (_input.attack && _atkCoolTime <= 0.0f)
-            {
-                _atkCoolTime = 3.0f;
-                _animator.SetTrigger(_animIDAttack_1);
-            }
-            _input.attack = false;
+            _input.attack = false;//어택 인풋 해제
         }
 
         private void LateUpdate()
@@ -191,7 +232,8 @@ namespace StarterAssets
             _animIDJump = Animator.StringToHash("Jump");
             _animIDFreeFall = Animator.StringToHash("FreeFall");
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
-            _animIDAttack_1 = Animator.StringToHash("Attack");
+            _animIDSwdAttack_1 = Animator.StringToHash("Attack 1");
+            _animIDSwdAttack_2 = Animator.StringToHash("Attack 2");
         }
 
         private void GroundedCheck()
