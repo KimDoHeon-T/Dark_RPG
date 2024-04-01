@@ -92,12 +92,12 @@ public class UICtrl : MonoBehaviour
 
     public void AddCombo(String code)//콤보 추가
     {
-        Image img = ComboSlots[ComboSave.Count].GetComponent<Image>();//슬롯에서 이미지 가져오기
-        int weaponNum = int.Parse(code.Substring(0, 1));//코드에서 무기 추출
-        int atkNum = int.Parse(code.Substring(2));//코드에서 기술 추출
-        img.sprite = AtkImgArray[weaponNum][atkNum];//슬롯 이미지 변경
         if (ComboSave.Count < 3)
         {
+            Image img = ComboSlots[ComboSave.Count].GetComponent<Image>();//슬롯에서 이미지 가져오기
+            int weaponNum = int.Parse(code.Substring(0, 1));//코드에서 무기 추출
+            int atkNum = int.Parse(code.Substring(2));//코드에서 기술 추출
+            img.sprite = AtkImgArray[weaponNum][atkNum];//슬롯 이미지 변경
             ComboSave.Add(code);//콤보 리스트에 기술 추가
         }
     }
@@ -110,7 +110,7 @@ public class UICtrl : MonoBehaviour
         }
         ComboSave.Clear();
     }
-    
+
     public void SaveCombo()
     {
         if (ComboSave.Count > 0)
