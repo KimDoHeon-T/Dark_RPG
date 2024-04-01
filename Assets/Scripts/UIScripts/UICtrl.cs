@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,13 +11,15 @@ public class UICtrl : MonoBehaviour
     [SerializeField] private GameObject[] SwordTypeArray = new GameObject[2];
     private GameObject[][] CanArray = new GameObject[2][];
     private int canNum;
+    private int profNum;
 
     [SerializeField] private Sprite[] SwordAtkImage = new Sprite[2];
-    private Sprite[][] AtkImgArray = new Sprite[1][];
+    [SerializeField] private Sprite[] SpearAtkImage = new Sprite[0];
+    private Sprite[][] AtkImgArray = new Sprite[2][];
     [SerializeField] private Sprite nullSprite;
 
     public GameObject[] ComboSlots = new GameObject[3];//콤보 저장용
-    public List<String> SwordCombo = new List<String>();
+    public List<String> ComboSave = new List<String>();
 
 
     //test
@@ -24,9 +27,11 @@ public class UICtrl : MonoBehaviour
 
     private void Awake()
     {
+        canNum = 0;
         CanArray[0] = ProfCanArray;
         CanArray[1] = SwordTypeArray;
         AtkImgArray[0] = SwordAtkImage;
+        AtkImgArray[1] = SpearAtkImage;
     }
 
 
@@ -58,6 +63,7 @@ public class UICtrl : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
             ComboSlots = GameObject.FindGameObjectsWithTag("ComboSlot");
+            ComboSave = Data.data.ComboList[canNum].ToList();
         }
     }
 
@@ -69,6 +75,11 @@ public class UICtrl : MonoBehaviour
             if (Array.Exists(array, x => x == can))
             {
                 canNum = Array.IndexOf(CanArray, array);
+                if (canNum == 0)//숙련도 창에서 무기를 바꾸는 버튼이라면
+                {
+                    profNum = Array.IndexOf(ProfCanArray, array);
+                    ComboSave = Data.data.ComboList[canNum].ToList();
+                }
             }
         }
         foreach (GameObject obj in CanArray[canNum])//Prof Canvas 전부 종료
@@ -81,13 +92,13 @@ public class UICtrl : MonoBehaviour
 
     public void AddCombo(String code)//콤보 추가
     {
-        Image img = ComboSlots[Data.data.SwordCombo.Count].GetComponent<Image>();//슬롯에서 이미지 가져오기
+        Image img = ComboSlots[ComboSave.Count].GetComponent<Image>();//슬롯에서 이미지 가져오기
         int weaponNum = int.Parse(code.Substring(0, 1));//코드에서 무기 추출
         int atkNum = int.Parse(code.Substring(2));//코드에서 기술 추출
         img.sprite = AtkImgArray[weaponNum][atkNum];//슬롯 이미지 변경
-        if (Data.data.SwordCombo.Count < 3)
+        if (ComboSave.Count < 3)
         {
-            Data.data.SwordCombo.Add(code);//콤보 리스트에 기술 추가
+            ComboSave.Add(code);//콤보 리스트에 기술 추가
         }
     }
 
@@ -97,6 +108,12 @@ public class UICtrl : MonoBehaviour
         {
             comboSlots.GetComponent<Image>().sprite = nullSprite;
         }
-        Data.data.SwordCombo.Clear();
+        ComboSave.Clear();
+    }
+    
+    public void SaveCombo()
+    {
+        if (ComboSave.Count > 0)
+            Data.data.SwordCombo = ComboSave.ToList();
     }
 }

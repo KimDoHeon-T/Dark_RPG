@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
@@ -102,9 +104,13 @@ namespace StarterAssets
         private int _animIDFreeFall;
         private int _animIDMotionSpeed;
         //내꺼
-        public List<int> atkCombo = new List<int>();
+        public List<int> SwordAtks = new List<int>();
         private int _animIDSwdAttack_1;
         private int _animIDSwdAttack_2;
+        private int _animIDSwdAtkEnd;
+        private int _animIDSwdAtkStart;
+        private float lastTime = 0;
+        private bool inUI = false;
 
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
         private PlayerInput _playerInput;
@@ -154,8 +160,8 @@ namespace StarterAssets
 #endif
 
             AssignAnimationIDs();
-            atkCombo.Add(_animIDSwdAttack_1);
-            atkCombo.Add(_animIDSwdAttack_2);
+            SwordAtks.Add(_animIDSwdAttack_1);
+            SwordAtks.Add(_animIDSwdAttack_2);
             // reset our timeouts on start
             _jumpTimeoutDelta = JumpTimeout;
             _fallTimeoutDelta = FallTimeout;
@@ -163,40 +169,65 @@ namespace StarterAssets
 
         private void Update()
         {
-            if (_atkCoolTime > 0)
+            if (Input.GetKeyUp(KeyCode.Escape) && inUI == false)
             {
-                GroundedCheck();
-                Attack();
+                inUI = true;
             }
-            else
+            else if(Input.GetKeyUp(KeyCode.Escape) && inUI == true)
             {
-                JumpAndGravity();
-                GroundedCheck();
-                Move();
-                Attack();
+                inUI = false;
+            }
+            if (!inUI)
+            {
+                if (_atkCoolTime > 0)
+                {
+                    GroundedCheck();
+                    Attack();
+                }
+                else
+                {
+                    JumpAndGravity();
+                    GroundedCheck();
+                    Move();
+                    Attack();
+                }
             }
         }
         private void Attack()
         {
+            List<string> SwordCombo = Data.data.SwordCombo.ToList();
+
             if (_atkCoolTime > 0)//공격이 실행 중에
             {
-                if (_atkComSeq == 1)
-                {
-                    _animator.SetBool(atkCombo[0], false);
-                }
+                lastTime = _atkCoolTime;
                 _atkCoolTime -= Time.deltaTime;//쿨타임이 줄고
-                if (_input.attack)//추가 공격 입력 시, 콤보루트 애니메이션 활성화
+
+                
+
+                if (_input.attack && _atkComSeq != 0)//추가 공격 입력 시, 콤보루트 애니메이션 활성화
                 {
-                    _animator.SetBool(atkCombo[_atkComSeq], true);
+                    Debug.Log("됨?");
+                    _animator.SetTrigger(SwordAtks[int.Parse(SwordCombo[_atkComSeq].Substring(2))]);
+                    Debug.Log(_animator.GetBool(SwordAtks[int.Parse(SwordCombo[_atkComSeq].Substring(2))]));
+                    Debug.Log(_atkComSeq);
+                    //SwordCombo는 Data에서 가져온 SwordCombo 데이터, 기술 코드
+                    //SwordAtks는 기술 코드를 인덱스로 기술별 애니메이션컨트롤러 bool값 넣어둔 거,
+                    //여기부분 한번 더 해석
                 }
             }
-            else//공격이 실행 중이지 않을 때
+            else//공격이 실행 중이지 않을 때, 혹은 공격이 끝났을 때
             {
-                if (_animator.GetBool(atkCombo[_atkComSeq]))//다음 동작이 열려있을 때
+                _animator.ResetTrigger(_animIDSwdAtkEnd);
+                if (lastTime > 0)
                 {
-                    _animator.SetBool(atkCombo[_atkComSeq], false);//우선 끄고
+                    _animator.SetTrigger(_animIDSwdAtkEnd);
+                }
+                lastTime = _atkCoolTime;
+                if (_animator.GetBool(SwordAtks[int.Parse(SwordCombo[_atkComSeq].Substring(2))]))//다음 동작이 열려있을 때
+                {
+                    _animator.SetTrigger(_animIDSwdAtkStart);
                     _atkCoolTime = 2;//쿨타임 돌리고
-                    if (_atkComSeq == atkCombo.Count - 1)//마지막 콤보라면 처음으로, 아니라면 다음 공격으로
+                    if (_atkComSeq >= SwordCombo.Count - 1)//마지막 콤보라면 처음으로, 아니라면 다음 공격으로
                     {
                         _atkComSeq = 0;
                     }
@@ -205,19 +236,22 @@ namespace StarterAssets
                         _atkComSeq++;
                     }
                 }
-                else//_atkCombo[_aktComSeq] == false일 때. 즉, 다음 공격 미입력 시
+                else//_SwordAtks[_aktComSeq] == false일 때. 즉, 다음 공격 미입력 시
                 {
                     _atkComSeq = 0;
                 }
 
                 if (_input.attack && Grounded)//첫 공격 발생, 땅에 있을 때만
                 {
-                    _animator.SetBool(atkCombo[_atkComSeq], true);
+                    _animator.SetTrigger(SwordAtks[int.Parse(SwordCombo[_atkComSeq].Substring(2))]);
+                    _animator.SetTrigger(_animIDSwdAtkStart);
                     _atkCoolTime = 2;
-                    _atkComSeq++;
+                    if (SwordCombo.Count > 1)
+                        _atkComSeq++;
                 }
             }
             _input.attack = false;//어택 인풋 해제
+            Debug.Log(_animator.GetBool(_animIDSwdAtkStart));
         }
 
         private void LateUpdate()
@@ -234,6 +268,8 @@ namespace StarterAssets
             _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
             _animIDSwdAttack_1 = Animator.StringToHash("Attack 1");
             _animIDSwdAttack_2 = Animator.StringToHash("Attack 2");
+            _animIDSwdAtkEnd = Animator.StringToHash("AtkEnd");
+            _animIDSwdAtkStart = Animator.StringToHash("AtkStart");
         }
 
         private void GroundedCheck()
