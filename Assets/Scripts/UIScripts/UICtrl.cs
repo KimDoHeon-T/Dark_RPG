@@ -45,7 +45,6 @@ public class UICtrl : MonoBehaviour
     private AnimationClip[][] AtkAnimArray;//공격애니메이션 배열의 배열
 
     [SerializeField] private GameObject EquipmentWindow;
-    private int _nowWeapon = 0;
 
     [SerializeField] private Animator playerAnimator;
 
@@ -121,9 +120,9 @@ public class UICtrl : MonoBehaviour
 
     public void WeaponChange(int weaponNum)
     {
-        _nowWeapon = weaponNum;
+        Data.data.nowWeapon = weaponNum;
         playerAnimator.runtimeAnimatorController = animators[weaponNum];
-        Debug.Log(_nowWeapon);
+        Debug.Log(Data.data.nowWeapon);
     }
 
     public void Btnclick(GameObject can)
@@ -172,21 +171,22 @@ public class UICtrl : MonoBehaviour
 
     public void SaveCombo()
     {
+        Debug.Log(Data.data.nowWeapon);
         if (ComboRam.Count > 0)
-            Data.data.SwordCombo = ComboRam.ToList();
+            Data.data.ComboList[Data.data.nowWeapon] = ComboRam.ToList();
         switch (Data.data.SwordCombo.Count)
         {
             case 1:
-                animators[_nowWeapon]["FirstAttack"] = AtkAnimArray[_nowWeapon][int.Parse(Data.data.SwordCombo[0].Substring(2))];
+                animators[Data.data.nowWeapon]["FirstAttack"] = AtkAnimArray[Data.data.nowWeapon][int.Parse(Data.data.ComboList[Data.data.nowWeapon][0].Substring(2))];
                 break;
             case 2:
-                animators[_nowWeapon]["FirstAttack"] = AtkAnimArray[_nowWeapon][int.Parse(Data.data.SwordCombo[0].Substring(2))];
-                animators[_nowWeapon]["SecondAttack"] = AtkAnimArray[_nowWeapon][int.Parse(Data.data.SwordCombo[1].Substring(2))];
+                animators[Data.data.nowWeapon]["FirstAttack"] = AtkAnimArray[Data.data.nowWeapon][int.Parse(Data.data.ComboList[Data.data.nowWeapon][0].Substring(2))];
+                animators[Data.data.nowWeapon]["SecondAttack"] = AtkAnimArray[Data.data.nowWeapon][int.Parse(Data.data.ComboList[Data.data.nowWeapon][1].Substring(2))];
                 break;
             case 3:
-                animators[_nowWeapon]["FirstAttack"] = AtkAnimArray[_nowWeapon][int.Parse(Data.data.SwordCombo[0].Substring(2))];
-                animators[_nowWeapon]["SecondAttack"] = AtkAnimArray[_nowWeapon][int.Parse(Data.data.SwordCombo[1].Substring(2))];
-                animators[_nowWeapon]["ThirdAttack"] = AtkAnimArray[_nowWeapon][int.Parse(Data.data.SwordCombo[2].Substring(2))];
+                animators[Data.data.nowWeapon]["FirstAttack"] = AtkAnimArray[Data.data.nowWeapon][int.Parse(Data.data.ComboList[Data.data.nowWeapon][0].Substring(2))];
+                animators[Data.data.nowWeapon]["SecondAttack"] = AtkAnimArray[Data.data.nowWeapon][int.Parse(Data.data.ComboList[Data.data.nowWeapon][1].Substring(2))];
+                animators[Data.data.nowWeapon]["ThirdAttack"] = AtkAnimArray[Data.data.nowWeapon][int.Parse(Data.data.ComboList[Data.data.nowWeapon][2].Substring(2))];
                 break;
         }
     }

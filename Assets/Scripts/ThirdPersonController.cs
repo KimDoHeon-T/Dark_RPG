@@ -215,19 +215,21 @@ namespace StarterAssets
             switch (_atkComSeq)
             {
                 case 0:
-                    _atkCoolTime = animators[0]["FirstAttack"].length;
-                    Debug.Log(animators[0]["FirstAttack"].length);
-                    Debug.Log(animators[0]["FirstAttack"].name); break;
+                    _atkCoolTime = animators[Data.data.nowWeapon]["FirstAttack"].length; break;
                 case 1:
-                    _atkCoolTime = animators[0]["SecondAttack"].length; break;
+                    _atkCoolTime = animators[Data.data.nowWeapon]["SecondAttack"].length; break;
                 case 2:
-                    _atkCoolTime = animators[0]["ThirdAttack"].length; break;
+                    _atkCoolTime = animators[Data.data.nowWeapon]["ThirdAttack"].length; break;
                 default: break;
             }
         }
 
+        //무기 교체했을 때, 총 콤보크기 변환이 안되는 문제가 있다.
+
         private void Attack()
         {
+            Debug.Log(_atkCoolTime);
+            //bug.Log(_animator.GetBool(Atks[_atkComSeq]));
             //재설계: 3개의 클립이 이어지는 코드를 만들고, 연결부위가 닫혀있으면 원래로 돌아가게 한다.
             //int.Parse(ComboList[_atkComSeq].Substring(2)): ComboList리스트의 현 시퀀스인덱스에서 추출한 기술코드에서 anim동작코드 추출
             if (_atkCoolTime > 0)//공격이 실행 중에
@@ -235,7 +237,8 @@ namespace StarterAssets
                 _atkCoolTime -= Time.deltaTime;//쿨타임이 줄고
 
                 if (_input.attack && _atkComSeq != 0 && !_animator.GetBool(Atks[_atkComSeq]))//추가 공격 입력 시, 콤보루트 애니메이션 활성화
-                {//기본 상태가 아니면 마지막 공격에서 트리거를 죄다 켜버리는 버그가 있다. 수정 바람 씨발 왜터지는거야 개 좆같으 코드 고아새
+                {//기본 상태가 아니면 마지막 공격에서 트리거를 죄다 켜버리는 버그가 있다. 해결완료
+                    Debug.Log("아 이리하고싶다.");
                     _nextAtk = true;
                     _animator.SetTrigger(Atks[_atkComSeq]);
                     _animator.ResetTrigger(_animIDSwdAtkEnd);
@@ -248,13 +251,12 @@ namespace StarterAssets
                     _nextAtk = false;
                     CoolTime();//쿨타임 돌리고
                     _animator.SetTrigger(_animIDSwdAtkEnd);//동작 종료 트리거 켜두고
-                    if (_atkComSeq >= Data.data.SwordCombo.Count - 1)//마지막 콤보라면 처음으로, 아니라면 다음 공격으로
+                    if (_atkComSeq >= Data.data.ComboList[Data.data.nowWeapon].Count - 1)//마지막 콤보라면 처음으로, 아니라면 다음 공격으로
                     {
                         _atkComSeq = 0;
                     }
                     else
                     {
-                        Debug.Log("성동진쓰레기");
                         _atkComSeq++;
                     }
                 }
@@ -267,7 +269,7 @@ namespace StarterAssets
                 {
                     _animator.SetTrigger(Atks[0]);
                     CoolTime();
-                    if (Data.data.SwordCombo.Count > 1)
+                    if (Data.data.ComboList[Data.data.nowWeapon].Count > 1)
                         _atkComSeq++;
                     _animator.SetTrigger(_animIDSwdAtkEnd);
                 }
