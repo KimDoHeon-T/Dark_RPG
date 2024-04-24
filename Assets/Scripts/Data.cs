@@ -9,17 +9,19 @@ public class Data : MonoBehaviour//Mono어쩌구 지우고 파일로써 존재하는게 목표
     public List<string> SpearCombo;
     public List<List<string>> ComboList;
     public int nowWeapon;
+    public int atkPower;
     private void Awake()
     {
         data = this;
-        SwordCombo = new List<string>();
-        ComboList = new List<List<string>>();
-        ComboList.Add(KnuckleCombo);
-        ComboList.Add(SwordCombo);
-        ComboList.Add(SpearCombo);
-        KnuckleCombo.Add("0000");
-        SwordCombo.Add("0100");
-        SpearCombo.Add("0200");
+        data.SwordCombo = new List<string>();
+        data.ComboList = new List<List<string>>();
+        data.ComboList.Add(KnuckleCombo);
+        data.ComboList.Add(SwordCombo);
+        data.ComboList.Add(SpearCombo);
+        data.KnuckleCombo.Add("0000");
+        data.SwordCombo.Add("0100");
+        data.SpearCombo.Add("0200");
+        data.atkPower = 10;
         //data.SwordCombo.Clear();//개발용 초기화 코드
     }
 }

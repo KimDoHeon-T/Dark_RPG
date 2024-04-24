@@ -164,8 +164,6 @@ public class UICtrl : MonoBehaviour
     {
         if (ComboRam.Count > 0)
             Data.data.ComboList[Data.data.nowWeapon] = ComboRam.ToList();
-        Debug.Log(AtkAnimArray[Data.data.nowWeapon][int.Parse(Data.data.ComboList[Data.data.nowWeapon][1].Substring(2))].name);
-        Debug.Log(AtkAnimArray[Data.data.nowWeapon][1]);
         switch (Data.data.ComboList[Data.data.nowWeapon].Count)
         {
             case 1:
