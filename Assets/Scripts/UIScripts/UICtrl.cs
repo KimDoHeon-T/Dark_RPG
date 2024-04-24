@@ -7,10 +7,11 @@ using UnityEngine.UI;
 public class UICtrl : MonoBehaviour
 {
     [SerializeField] private GameObject mainMenu;
-    [SerializeField] private GameObject[] ProfCanArray = new GameObject[2];
-    [SerializeField] private GameObject[] SwordTypeArray = new GameObject[2];
+    [SerializeField] private GameObject[] ProfCanArray = new GameObject[2];//각 무기별 캔버스 저장소
+    [SerializeField] private GameObject[] SwordTypeArray = new GameObject[2];//검의 타입별 캔버스 저장소
+    [SerializeField] private GameObject[] SpearTypeArray = new GameObject[2];//검의 타입별 캔버스 저장소
     private GameObject[][] CanArray = new GameObject[2][];
-    private int canNum;
+    private int canNum = 0;
     private int profNum;
 
     [SerializeField] private Sprite[] SwordAtkImage = new Sprite[2];
@@ -54,9 +55,8 @@ public class UICtrl : MonoBehaviour
 
     private void Awake()
     {
-        canNum = 0;
-        CanArray[0] = ProfCanArray;
-        CanArray[1] = SwordTypeArray;
+        CanArray[0] = SwordTypeArray;
+        CanArray[1] = SpearTypeArray;
         AtkImgArray[0] = SwordAtkImage;
         AtkImgArray[1] = SpearAtkImage;
         KnuckleAnimationArray = new AnimationClip[] { k0000, k0001, k0002 };
@@ -93,11 +93,16 @@ public class UICtrl : MonoBehaviour
         }
         else
         {
+            foreach (GameObject can in ProfCanArray)
+            {
+                can.SetActive(false);
+            }
+            ProfCanArray[Data.data.nowWeapon].SetActive(true);
             mainMenu.SetActive(true);
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
             ComboSlots = GameObject.FindGameObjectsWithTag("ComboSlot");
-            ComboRam = Data.data.ComboList[canNum].ToList();
+            ComboRam = Data.data.ComboList[Data.data.nowWeapon].ToList();
         }
     }
 
@@ -127,32 +132,18 @@ public class UICtrl : MonoBehaviour
 
     public void Btnclick(GameObject can)
     {
-
-        foreach (GameObject[] array in CanArray)
+        foreach (GameObject typeCan in CanArray[Data.data.nowWeapon])
         {
-            if (Array.Exists(array, x => x == can))
-            {
-                canNum = Array.IndexOf(CanArray, array);
-                if (canNum == 0)//숙련도 창에서 무기를 바꾸는 버튼이라면
-                {
-                    profNum = Array.IndexOf(ProfCanArray, array);
-                    ComboRam = Data.data.ComboList[canNum].ToList();
-                }
-            }
-        }
-        foreach (GameObject obj in CanArray[canNum])//Prof Canvas 전부 종료
-        {
-            obj.SetActive(false);
+            typeCan.SetActive(false);
         }
         can.SetActive(true);//선택된 Canvas만 활성화
-        ComboSlots = GameObject.FindGameObjectsWithTag("ComboSlot");
     }
 
     public void AddCombo(String code)//콤보 추가
     {
         if (ComboRam.Count < 3)
         {
-            Image img = ComboSlots[ComboRam.Count].GetComponent<Image>();//슬롯에서 이미지 가져오기
+            Image img = ComboSlots[ComboRam.Count].GetComponent<Image>();//슬롯에서 이미지컴포넌트 가져오기
             int weaponNum = int.Parse(code.Substring(0, 1));//코드에서 무기 추출
             int atkNum = int.Parse(code.Substring(2));//코드에서 기술 추출
             img.sprite = AtkImgArray[weaponNum][atkNum];//슬롯 이미지 변경
@@ -171,10 +162,11 @@ public class UICtrl : MonoBehaviour
 
     public void SaveCombo()
     {
-        Debug.Log(Data.data.nowWeapon);
         if (ComboRam.Count > 0)
             Data.data.ComboList[Data.data.nowWeapon] = ComboRam.ToList();
-        switch (Data.data.SwordCombo.Count)
+        Debug.Log(AtkAnimArray[Data.data.nowWeapon][int.Parse(Data.data.ComboList[Data.data.nowWeapon][1].Substring(2))].name);
+        Debug.Log(AtkAnimArray[Data.data.nowWeapon][1]);
+        switch (Data.data.ComboList[Data.data.nowWeapon].Count)
         {
             case 1:
                 animators[Data.data.nowWeapon]["FirstAttack"] = AtkAnimArray[Data.data.nowWeapon][int.Parse(Data.data.ComboList[Data.data.nowWeapon][0].Substring(2))];

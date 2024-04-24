@@ -228,7 +228,6 @@ namespace StarterAssets
 
         private void Attack()
         {
-            Debug.Log(_atkCoolTime);
             //bug.Log(_animator.GetBool(Atks[_atkComSeq]));
             //재설계: 3개의 클립이 이어지는 코드를 만들고, 연결부위가 닫혀있으면 원래로 돌아가게 한다.
             //int.Parse(ComboList[_atkComSeq].Substring(2)): ComboList리스트의 현 시퀀스인덱스에서 추출한 기술코드에서 anim동작코드 추출
@@ -238,7 +237,6 @@ namespace StarterAssets
 
                 if (_input.attack && _atkComSeq != 0 && !_animator.GetBool(Atks[_atkComSeq]))//추가 공격 입력 시, 콤보루트 애니메이션 활성화
                 {//기본 상태가 아니면 마지막 공격에서 트리거를 죄다 켜버리는 버그가 있다. 해결완료
-                    Debug.Log("아 이리하고싶다.");
                     _nextAtk = true;
                     _animator.SetTrigger(Atks[_atkComSeq]);
                     _animator.ResetTrigger(_animIDSwdAtkEnd);
