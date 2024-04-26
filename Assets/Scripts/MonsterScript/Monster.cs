@@ -6,9 +6,9 @@ public class Monster : MonoBehaviour
     private int atkPower;
     private int armor;
 
-    protected void OnCollisionEnter(Collision collision)
+    protected void OnTriggerEnter(Collider other)
     {
-        if (collision.gameObject.CompareTag("weapon"))
+        if (other.gameObject.CompareTag("weapon"))
         {
             hp -= Data.data.atkPower;
             Debug.Log(hp);

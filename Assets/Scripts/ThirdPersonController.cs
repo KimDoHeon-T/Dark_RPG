@@ -246,6 +246,7 @@ namespace StarterAssets
             {
                 if (_nextAtk)//다음 동작이 열려있을 때
                 {
+                    Data.data.equipWeapon.GetComponent<Weapon>().Use();
                     _nextAtk = false;
                     CoolTime();//쿨타임 돌리고
                     _animator.SetTrigger(_animIDSwdAtkEnd);//동작 종료 트리거 켜두고
@@ -265,6 +266,7 @@ namespace StarterAssets
 
                 if (_input.attack && Grounded)//첫 공격 발생, 땅에 있을 때만
                 {
+                    Data.data.equipWeapon.GetComponent<Weapon>().Use();
                     _animator.SetTrigger(Atks[0]);
                     CoolTime();
                     if (Data.data.ComboList[Data.data.nowWeapon].Count > 1)
