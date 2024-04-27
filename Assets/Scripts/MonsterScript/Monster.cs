@@ -8,5 +8,10 @@ public class Monster : MonoBehaviour
 
     protected void OnTriggerEnter(Collider other)
     {
+        if (other.gameObject.CompareTag("weapon"))
+        {
+            hp -= Data.data.atkPower;
+            Debug.Log(hp);
+        }
     }
 }

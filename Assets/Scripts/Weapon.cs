@@ -35,19 +35,6 @@ public class Weapon : MonoBehaviour
 
         yield break;//코루틴 탈출
     }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == "monster")
-        {
-            GameObject mob = other.gameObject;
-            int hp = mob.GetComponent<Monster>().hp;
-            hp -= 10;
-            Debug.Log(hp);
-        }
-        Debug.Log("아오");
-    }
-
     //일반함수 메인루틴 -> 서브루틴 -> 메인루팅
     //코루틴 메인루틴 + 코루틴(동시실행)
 }
