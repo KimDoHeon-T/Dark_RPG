@@ -24,13 +24,19 @@ public class MonsterAI : MonoBehaviour
     private float timeSinceLastSearchPoint = 0f;
     private float currentFieldOfView;
     private float eyeHeight = 1.8f; // 몬스터의 눈 높이. 실제 모델에 따라 조정이 필요합니다.
+
+    private Animator animator;
+    public float atkLength;
+    private float atkCoolTime;
     private void Start()
     {
+        animator = GetComponent<Animator>();
         currentFieldOfView = normalFieldOfView;
     }
 
     private void Update()
     {
+
         if (IsPlayerInView() && HasLineOfSight())
         {
             playerSpotted = true;
@@ -76,10 +82,18 @@ public class MonsterAI : MonoBehaviour
             }
         }
 
-        if (IsPlayerInAttackRange() && playerSpotted && HasLineOfSight())
+        if (IsPlayerInAttackRange() && playerSpotted && HasLineOfSight() && atkCoolTime <= 0)
         {
             AttackPlayer();
             Debug.Log("Attacking player...");
+        }
+        if (atkCoolTime > 0)
+        {
+            atkCoolTime -= Time.deltaTime;
+        }
+        else
+        {
+            agent.isStopped = false;
         }
     }
 
@@ -144,6 +158,9 @@ public class MonsterAI : MonoBehaviour
 
     private void AttackPlayer()
     {
+        animator.SetTrigger("Attack");
+        agent.isStopped = true;
+        atkCoolTime += atkLength;
         Debug.Log("Attacking Player!");
     }
 }

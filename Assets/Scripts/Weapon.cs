@@ -37,4 +37,22 @@ public class Weapon : MonoBehaviour
     }
     //일반함수 메인루틴 -> 서브루틴 -> 메인루팅
     //코루틴 메인루틴 + 코루틴(동시실행)
+
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log(other.tag);
+        if (other.tag == "monster")
+        {
+            Monster mob = other.gameObject.GetComponent<Monster>();
+            mob.hp -= Data.data.atkPower;
+            Animator mobAnim = mob.GetComponent<Animator>();
+            if (mobAnim.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+            {
+                mobAnim.SetTrigger("Back Hit");
+            }
+            mobAnim.SetTrigger("Hit");
+            Debug.Log(mob.hp);
+        }
+    }
 }

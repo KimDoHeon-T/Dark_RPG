@@ -10,8 +10,6 @@ public class Monster : MonoBehaviour
     {
         if (other.gameObject.CompareTag("weapon"))
         {
-            hp -= Data.data.atkPower;
-            Debug.Log(hp);
         }
     }
 }

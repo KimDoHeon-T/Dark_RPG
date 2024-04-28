@@ -7456,6 +7456,7 @@ MonoBehaviour:
   searchDuration: 30
   searchRadius: 5
   searchInterval: 5
+  atkLength: 2
 --- !u!114 &1747830363
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8383,7 +8384,8 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 1d439f4d713c4224182de4b91be5f820, type: 2}
+      objectReference: {fileID: 22100000, guid: 5af8319cf1ccf6b48af5811c23ea2683,
+        type: 2}
     - target: {fileID: 5866666021909216657, guid: ef95c0606db2c0440b01f8edfc272191,
         type: 3}
       propertyPath: m_ApplyRootMotion
@@ -9250,7 +9252,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1034138921, guid: ab8ac2017bc4c9e40b484324e5ee20e7, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1034138921, guid: ab8ac2017bc4c9e40b484324e5ee20e7, type: 3}
       propertyPath: m_Center.z
