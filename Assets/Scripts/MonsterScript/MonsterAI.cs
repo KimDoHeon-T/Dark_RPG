@@ -27,7 +27,7 @@ public class MonsterAI : MonoBehaviour
 
     private Animator animator;
     public float atkLength;
-    private float atkCoolTime;
+    public float atkCoolTime;
     private void Start()
     {
         animator = GetComponent<Animator>();
@@ -36,7 +36,6 @@ public class MonsterAI : MonoBehaviour
 
     private void Update()
     {
-
         if (IsPlayerInView() && HasLineOfSight())
         {
             playerSpotted = true;

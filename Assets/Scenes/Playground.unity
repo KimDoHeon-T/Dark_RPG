@@ -7457,6 +7457,7 @@ MonoBehaviour:
   searchRadius: 5
   searchInterval: 5
   atkLength: 2
+  atkCoolTime: 0
 --- !u!114 &1747830363
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7507,19 +7508,6 @@ MonoBehaviour:
     m_Bits: 0
   canPush: 0
   strength: 1.1
---- !u!114 &1747830368
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1747830356}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 088125a368910844f836fc0f8f513ae8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hp: 0
 --- !u!1001 &1762682258
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8384,8 +8372,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 22100000, guid: 5af8319cf1ccf6b48af5811c23ea2683,
-        type: 2}
+      objectReference: {fileID: 9100000, guid: 1d439f4d713c4224182de4b91be5f820, type: 2}
     - target: {fileID: 5866666021909216657, guid: ef95c0606db2c0440b01f8edfc272191,
         type: 3}
       propertyPath: m_ApplyRootMotion

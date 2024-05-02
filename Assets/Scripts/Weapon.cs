@@ -45,6 +45,7 @@ public class Weapon : MonoBehaviour
         if (other.tag == "monster")
         {
             Monster mob = other.gameObject.GetComponent<Monster>();
+            MonsterAI mobAI = mob.GetComponent<MonsterAI>();
             mob.hp -= Data.data.atkPower;
             Animator mobAnim = mob.GetComponent<Animator>();
             if (mobAnim.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
@@ -52,6 +53,7 @@ public class Weapon : MonoBehaviour
                 mobAnim.SetTrigger("Back Hit");
             }
             mobAnim.SetTrigger("Hit");
+            mobAI.atkCoolTime = 0;
             Debug.Log(mob.hp);
         }
     }
