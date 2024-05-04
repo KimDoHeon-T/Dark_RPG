@@ -18,6 +18,6 @@ public class MonsterAnim : MonoBehaviour
         vec3 = Nav.velocity;
         vec3 = vec3.normalized;
         vel = vec3.magnitude;
-        animator.SetFloat("Speed", vel);
+        animator.SetFloat("Speed", Mathf.Epsilon + vel);
     }
 }
