@@ -2296,7 +2296,9 @@ GameObject:
   - component: {fileID: 5866666020295895320}
   - component: {fileID: 1616368780}
   - component: {fileID: 1616368779}
+  - component: {fileID: 5866666020295895323}
   - component: {fileID: 5866666020295895321}
+  - component: {fileID: 5866666020295895322}
   m_Layer: 0
   m_Name: Creature
   m_TagString: Untagged
@@ -4158,7 +4160,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: f6f2409eb57ff5949b4a29bc0efcf58b, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 
@@ -4183,6 +4185,45 @@ MonoBehaviour:
     m_Bits: 0
   canPush: 0
   strength: 1.1
+--- !u!114 &5866666020295895322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132147549923800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37e3717d67c3a254fb118ee2a893cab6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animLen: 
+  nowAtkNum: 0
+--- !u!114 &5866666020295895323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132147549923800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0e1c62eb12b2854fa1609f87f9cb3a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agent: {fileID: 1616368779}
+  player: {fileID: 1663186329}
+  lineOfSightMask:
+    serializedVersion: 2
+    m_Bits: 1
+  chaseRange: 10
+  attackRange: 2
+  normalFieldOfView: 110
+  alertedFieldOfView: 270
+  lostSightDelay: 1
+  searchDuration: 30
+  searchRadius: 5
+  searchInterval: 5
 --- !u!4 &5901452233654903265
 Transform:
   m_ObjectHideFlags: 0
