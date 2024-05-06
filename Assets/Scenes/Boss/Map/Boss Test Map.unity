@@ -539,11 +539,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4847643549659240, guid: f063809a91c6b0248956e054e09b9b56, type: 3}
       propertyPath: m_LocalScale.x
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4847643549659240, guid: f063809a91c6b0248956e054e09b9b56, type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.5
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4847643549659240, guid: f063809a91c6b0248956e054e09b9b56, type: 3}
       propertyPath: m_LocalScale.z
@@ -2271,6 +2271,7 @@ GameObject:
   - component: {fileID: 5866666020295895323}
   - component: {fileID: 5866666020295895321}
   - component: {fileID: 5866666020295895322}
+  - component: {fileID: 5866666020295895324}
   m_Layer: 0
   m_Name: Creature
   m_TagString: Untagged
@@ -4169,6 +4170,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37e3717d67c3a254fb118ee2a893cab6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animator: {fileID: 0}
   animLen: []
   nowAtkNum: 0
   isAtk: 0
@@ -4197,6 +4199,20 @@ MonoBehaviour:
   searchDuration: 30
   searchRadius: 5
   searchInterval: 5
+--- !u!136 &5866666020295895324
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132147549923800}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 1.2, z: 0}
 --- !u!4 &5901452233654903265
 Transform:
   m_ObjectHideFlags: 0

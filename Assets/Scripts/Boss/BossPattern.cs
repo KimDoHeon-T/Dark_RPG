@@ -49,53 +49,20 @@ public class BossPattern : MonoBehaviour
         while (true)
         {
             Debug.Log("추적중");
-            yield return new WaitForEndOfFrame();
-            if (IsPlayerInView() && HasLineOfSight())
+
+            if (!FBA.isAtk)
             {
-                playerSpotted = true;
-                isSearching = false;
-                timeSinceLastSeen = 0f;
-                lastSeenPosition = player.position;
                 agent.SetDestination(player.position);
-                currentFieldOfView = alertedFieldOfView;
-                //Debug.Log("Player spotted and in line of sight.");
+                if (IsPlayerInAttackRange())
+                {
+                    AttackPlayer();
+                }
             }
             else
             {
-                timeSinceLastSeen += Time.deltaTime;
-                //Debug.Log("Searching for player...");
-
-                if (playerSpotted && !isSearching && timeSinceLastSeen > lostSightDelay)//시야에서 사라진 지 lostSightDelay정도 지나면 마지막 발견 위치까지 searchInterval 동안 이동, 탐색 시작
-                {
-                    isSearching = true;
-                    searchStartTime = Time.time;
-                    agent.SetDestination(lastSeenPosition);
-                }
-                else if (playerSpotted && !isSearching && timeSinceLastSeen < lostSightDelay)//시야에서 잠깐 사라진 정도로는 계속 추적 진행
-                {
-                    lastSeenPosition = player.position;
-                    agent.SetDestination(player.position);
-                }
-                else if (isSearching)//주변 탐색 시작 searchDuration동안 진행
-                {
-                    if (Time.time - searchStartTime > searchDuration)
-                    {
-                        playerSpotted = false;
-                        isSearching = false;
-                        agent.SetDestination(transform.position);
-                        currentFieldOfView = normalFieldOfView;
-                    }
-                    else if (Time.time - timeSinceLastSearchPoint > searchInterval)//searchInterval마다 주변 탐색
-                    {
-                        MoveToNextSearchPoint();
-                    }
-                }
+                transform.LookAt(player.position);
             }
-
-            if (IsPlayerInAttackRange() && playerSpotted && HasLineOfSight() && !FBA.isAtk)
-            {
-                AttackPlayer();
-            }
+            yield return null;
         }
     }
 
@@ -160,7 +127,7 @@ public class BossPattern : MonoBehaviour
 
     private void AttackPlayer()
     {
-        StopCoroutine("PlayerTracking");
+        //StopCoroutine("PlayerTracking");
         FBA.Attack();
         Debug.Log(FBA.nowAtkNum);
         atkLen = FBA.animLen[FBA.nowAtkNum];
