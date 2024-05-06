@@ -5,20 +5,22 @@ using UnityEngine.AI;
 public class FirstBossAnim : MonoBehaviour
 {
     private NavMeshAgent Nav;
-    private Animator animator;
+    public Animator animator;
     private float vel;
-    public int[] animLen;
+    public float[] animLen;
     public int nowAtkNum;
+    public bool isAtk = false;
 
     private void Start()
     {
         Nav = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-        animLen = new int[4];
-        animLen[0] = 253;
-        animLen[1] = 218;
-        animLen[2] = 200;
-        animLen[3] = 240;
+        animLen = new float[5];
+        animLen[0] = 0;
+        animLen[1] = 1.9f;
+        animLen[2] = 2.0f;
+        animLen[3] = 2.0f;
+        animLen[4] = 3.3f;
         StartCoroutine("TrackingSpeed");
     }
 
@@ -26,14 +28,19 @@ public class FirstBossAnim : MonoBehaviour
     {
         while (true)
         {
-            vel = Nav.velocity.normalized.magnitude;
-            animator.SetFloat("Speed", Mathf.Epsilon + vel);
+            if (!isAtk)
+            {
+                vel = Nav.velocity.normalized.magnitude;
+                animator.SetFloat("Speed", Mathf.Epsilon + vel);
+            }
             yield return null;
         }
     }
 
     public void Attack()
     {
+        isAtk = true;
+        animator.SetFloat("Speed", Mathf.Epsilon);
         animator.SetTrigger("Attack");
         animator.SetInteger("AtkNum", nowAtkNum = Random.Range(1, 5));
     }

@@ -28,6 +28,8 @@ public class BossPattern : MonoBehaviour
 
 
     private FirstBossAnim FBA;
+    private float atkLen;
+    private float lastTime;
 
     private void Start()
     {
@@ -46,6 +48,7 @@ public class BossPattern : MonoBehaviour
     {
         while (true)
         {
+            Debug.Log("추적중");
             yield return new WaitForEndOfFrame();
             if (IsPlayerInView() && HasLineOfSight())
             {
@@ -67,13 +70,11 @@ public class BossPattern : MonoBehaviour
                     isSearching = true;
                     searchStartTime = Time.time;
                     agent.SetDestination(lastSeenPosition);
-                    Debug.Log("Lost sight of player, starting search...");
                 }
                 else if (playerSpotted && !isSearching && timeSinceLastSeen < lostSightDelay)//시야에서 잠깐 사라진 정도로는 계속 추적 진행
                 {
                     lastSeenPosition = player.position;
                     agent.SetDestination(player.position);
-                    Debug.Log("플레이어 흔적 추적 중");
                 }
                 else if (isSearching)//주변 탐색 시작 searchDuration동안 진행
                 {
@@ -83,7 +84,6 @@ public class BossPattern : MonoBehaviour
                         isSearching = false;
                         agent.SetDestination(transform.position);
                         currentFieldOfView = normalFieldOfView;
-                        Debug.Log("Search duration exceeded, resetting...");
                     }
                     else if (Time.time - timeSinceLastSearchPoint > searchInterval)//searchInterval마다 주변 탐색
                     {
@@ -92,10 +92,9 @@ public class BossPattern : MonoBehaviour
                 }
             }
 
-            if (IsPlayerInAttackRange() && playerSpotted && HasLineOfSight())
+            if (IsPlayerInAttackRange() && playerSpotted && HasLineOfSight() && !FBA.isAtk)
             {
                 AttackPlayer();
-                Debug.Log("Attacking player...");
             }
         }
     }
@@ -163,14 +162,24 @@ public class BossPattern : MonoBehaviour
     {
         StopCoroutine("PlayerTracking");
         FBA.Attack();
-        StopCoroutine("StopForAtk");
-        StartCoroutine("StopForAtk");
+        Debug.Log(FBA.nowAtkNum);
+        atkLen = FBA.animLen[FBA.nowAtkNum];
+        agent.isStopped = true;
         Debug.Log("Attacking Player!");
     }
 
-    private IEnumerable StopForAtk()
+
+    private void Update()
     {
-        yield return new WaitForSeconds(FBA.animLen[FBA.nowAtkNum]);
-        StartCoroutine("PlayerTracking");
+        Debug.Log(atkLen);
+        lastTime = atkLen;
+        atkLen -= Time.deltaTime;
+        if (lastTime > 0 && atkLen < 0)
+        {
+            agent.isStopped = false;
+            FBA.isAtk = false;
+            FBA.animator.SetTrigger("AtkEnd");
+            StartCoroutine("PlayerTracking");
+        }
     }
 }
