@@ -127,7 +127,7 @@ public class BossPattern : MonoBehaviour
 
     private void AttackPlayer()
     {
-        //StopCoroutine("PlayerTracking");
+        StopCoroutine("PlayerTracking");
         FBA.Attack();
         Debug.Log(FBA.nowAtkNum);
         atkLen = FBA.animLen[FBA.nowAtkNum];
@@ -145,6 +145,8 @@ public class BossPattern : MonoBehaviour
         {
             agent.isStopped = false;
             FBA.isAtk = false;
+            transform.LookAt(player.position);
+            //transform.LookAt(transform.position + (transform.position - player.position));
             FBA.animator.SetTrigger("AtkEnd");
             StartCoroutine("PlayerTracking");
         }
