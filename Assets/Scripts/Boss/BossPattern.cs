@@ -17,15 +17,6 @@ public class BossPattern : MonoBehaviour
     public float searchRadius = 5f;
     public float searchInterval = 5f;
 
-    private bool playerSpotted = false;
-    private float timeSinceLastSeen = 0f;
-    private float searchStartTime = 0;
-    private Vector3 lastSeenPosition;
-    private bool isSearching = false;
-    private float timeSinceLastSearchPoint = 0f;
-    private float currentFieldOfView;
-    private float eyeHeight = 1.8f; // 몬스터의 눈 높이. 실제 모델에 따라 조정이 필요합니다.
-
 
     private FirstBossAnim FBA;
     private float atkLen;
@@ -33,7 +24,6 @@ public class BossPattern : MonoBehaviour
 
     private void Start()
     {
-        currentFieldOfView = normalFieldOfView;
         FBA = GetComponent<FirstBossAnim>();
         StartCoroutine("PlayerTracking");
     }
@@ -64,58 +54,6 @@ public class BossPattern : MonoBehaviour
             }
             yield return null;
         }
-    }
-
-    private void MoveToNextSearchPoint()//마지막 목격 지점 근처로 이동
-    {
-        Vector3 searchPoint = lastSeenPosition + (Random.insideUnitSphere * searchRadius);
-        NavMeshHit hit;
-        if (NavMesh.SamplePosition(searchPoint, out hit, searchRadius, NavMesh.AllAreas))
-        {
-            agent.SetDestination(hit.position);
-            //Debug.Log("Moving to next search point...");
-        }
-        timeSinceLastSearchPoint = Time.time;
-    }
-
-    private bool IsPlayerInView()
-    {
-        Vector3 directionToPlayer = player.position - transform.position;
-        float angle = Vector3.Angle(transform.forward, directionToPlayer);
-
-        bool isInView = angle < currentFieldOfView * 0.5f && Vector3.Distance(transform.position, player.position) < chaseRange;
-        //Debug.Log($"Is player in view: {isInView}");
-        return isInView;
-    }
-
-    private bool HasLineOfSight()
-    {
-        Vector3 eyePosition = transform.position + Vector3.up * 1.6f; // "눈"의 높이로 가정한 위치. 적절히 조정이 필요할 수 있음.
-        Vector3[] targetPoints = new Vector3[3];
-        targetPoints[0] = player.position + Vector3.up * 1.6f; // 플레이어의 머리 위치 추정
-        targetPoints[1] = player.position + Vector3.up * 0.8f; // 플레이어의 중심 위치 추정
-        targetPoints[2] = player.position; // 플레이어의 발 위치 (기본 위치)
-
-        foreach (Vector3 targetPoint in targetPoints)
-        {
-            Vector3 directionToTarget = (targetPoint - eyePosition).normalized;
-            float distanceToTarget = Vector3.Distance(eyePosition, targetPoint);
-
-            if (Physics.Raycast(eyePosition, directionToTarget, out RaycastHit hit, distanceToTarget, lineOfSightMask))
-            {
-                Debug.DrawLine(eyePosition, hit.point, Color.red); // 장애물을 통해 플레이어가 가린 경우
-            }
-            else
-            {
-                //Debug.Log("bb");
-                // 레이캐스트가 플레이어의 머리, 몸, 발 중 하나라도 감지한 경우
-                Debug.DrawRay(eyePosition, directionToTarget * distanceToTarget, Color.green); // 레이캐스트 도달 거리 표시
-                return true;
-            }
-        }
-
-        // 모든 레이캐스트가 플레이어를 감지하지 못했다면
-        return false;
     }
 
     private bool IsPlayerInAttackRange()
@@ -150,5 +88,10 @@ public class BossPattern : MonoBehaviour
             FBA.animator.SetTrigger("AtkEnd");
             StartCoroutine("PlayerTracking");
         }
+    }
+
+    public void LookPlayer()
+    {
+        transform.LookAt(player.position);
     }
 }
