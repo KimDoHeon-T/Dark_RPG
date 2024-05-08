@@ -22,6 +22,8 @@ public class BossPattern : MonoBehaviour
     private float atkLen;
     private float lastTime;
 
+    public float hp = 2000;
+
     private void Start()
     {
         FBA = GetComponent<FirstBossAnim>();
