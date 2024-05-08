@@ -17,12 +17,14 @@ public class BossPattern : MonoBehaviour
     public float searchRadius = 5f;
     public float searchInterval = 5f;
 
-
+    public int phase = 1;
     private FirstBossAnim FBA;
     private float atkLen;
     private float lastTime;
 
-    public float hp = 2000;
+    public float shield = 20;
+    [SerializeField] private GameObject shieldpar;
+    [SerializeField] private GameObject shieldbreak;
 
     private void Start()
     {
@@ -40,7 +42,6 @@ public class BossPattern : MonoBehaviour
     {
         while (true)
         {
-            Debug.Log("ÃßÀûÁß");
 
             if (!FBA.isAtk)
             {
@@ -78,17 +79,27 @@ public class BossPattern : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(atkLen);
         lastTime = atkLen;
         atkLen -= Time.deltaTime;
+        if (shield <= 0)
+        {
+            shieldpar.SetActive(false);
+            shieldbreak.SetActive(true);
+        }
         if (lastTime > 0 && atkLen < 0)
         {
-            agent.isStopped = false;
-            FBA.isAtk = false;
-            transform.LookAt(player.position);
-            //transform.LookAt(transform.position + (transform.position - player.position));
-            FBA.animator.SetTrigger("AtkEnd");
-            StartCoroutine("PlayerTracking");
+            if (shield >= 0)
+            {
+                agent.isStopped = false;
+                FBA.isAtk = false;
+                transform.LookAt(player.position);
+                FBA.animator.SetTrigger("AtkEnd");
+                StartCoroutine("PlayerTracking");
+            }
+            else
+            {
+                FBA.animator.SetTrigger("Phase2");
+            }
         }
     }
 

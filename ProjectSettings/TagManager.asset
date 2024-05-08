@@ -8,6 +8,7 @@ TagManager:
   - CinemachineTarget
   - weapon
   - monster
+  - FirstBoss
   layers:
   - Default
   - TransparentFX

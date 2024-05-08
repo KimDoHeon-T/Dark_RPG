@@ -41,8 +41,7 @@ public class Weapon : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.tag);
-        if (other.tag == "monster")
+        if (other.tag == "monster")//몬스터를 타격했을 경우
         {
             Monster mob = other.gameObject.GetComponent<Monster>();
             MonsterAI mobAI = mob.GetComponent<MonsterAI>();
@@ -55,6 +54,15 @@ public class Weapon : MonoBehaviour
             mobAnim.SetTrigger("Hit");
             mobAI.atkCoolTime = 0;
             Debug.Log(mob.hp);
+        }
+        else if (other.tag == "FirstBoss")
+        {
+            BossPattern boss = other.gameObject.GetComponent<BossPattern>();
+            if (boss.phase == 1)
+            {
+                boss.shield -= Data.data.atkPower;
+            }
+            Debug.Log(boss.shield);
         }
     }
 }
