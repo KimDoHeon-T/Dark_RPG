@@ -23,7 +23,6 @@ public class MonsterAI : MonoBehaviour
     private bool isSearching = false;
     private float timeSinceLastSearchPoint = 0f;
     private float currentFieldOfView;
-    private float eyeHeight = 1.8f; // 몬스터의 눈 높이. 실제 모델에 따라 조정이 필요합니다.
 
     private Animator animator;
     public float atkLength;

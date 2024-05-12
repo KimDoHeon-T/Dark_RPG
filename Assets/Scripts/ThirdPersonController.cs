@@ -119,6 +119,9 @@ namespace StarterAssets
         private bool _nextAtk = false;
         private bool inUI = false;
 
+        public bool invincibility = false;
+        private bool isStuned;
+
 
 
 
@@ -159,6 +162,7 @@ namespace StarterAssets
 
         private void Start()
         {
+
             _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
@@ -180,31 +184,33 @@ namespace StarterAssets
 
         private void Update()
         {
-            if (Input.GetKeyUp(KeyCode.Escape) && inUI == false)
+            GroundedCheck();
+            if (!isStuned)
             {
-                inUI = true;
-            }
-            else if (Input.GetKeyUp(KeyCode.Escape) && inUI == true)
-            {
-                inUI = false;
-            }
-            if (!inUI)
-            {
-                if (_atkCoolTime > 0)
+                if (Input.GetKeyUp(KeyCode.Escape) && inUI == false)
                 {
-                    //Debug.Log("쿨타임 진행중");
-                    GroundedCheck();
-                    Attack();
+                    inUI = true;
                 }
-                else
+                else if (Input.GetKeyUp(KeyCode.Escape) && inUI == true)
                 {
-                    JumpAndGravity();
-                    GroundedCheck();
-                    Move();
-                    Attack();
-                    if (_input.weapon)
+                    inUI = false;
+                }
+                if (!inUI)
+                {
+                    if (_atkCoolTime > 0)
                     {
-                        //_animator.runtimeAnimatorController = spearAOC;//테스트용 무기 교체
+                        //Debug.Log("쿨타임 진행중");
+                        Attack();
+                    }
+                    else
+                    {
+                        JumpAndGravity();
+                        Move();
+                        Attack();
+                        if (_input.weapon)
+                        {
+                            //_animator.runtimeAnimatorController = spearAOC;//테스트용 무기 교체
+                        }
                     }
                 }
             }
@@ -507,6 +513,44 @@ namespace StarterAssets
             {
                 AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
             }
+        }
+        public void KnuckBack(Vector3 vec3, int knuckBackP)
+        {
+            invincibility = true;
+            GetComponent<CharacterController>().enabled = false;
+            transform.LookAt(new Vector3(vec3.x, transform.position.y, vec3.z));
+            _animator.ResetTrigger("AtkEnd");
+            _animator.ResetTrigger("Attack 1");
+            _animator.ResetTrigger("Attack 2");
+            _animator.ResetTrigger("Attack 3");
+            _animator.SetTrigger("KnuckBack");
+            GetComponent<Rigidbody>().AddForce((transform.position - new Vector3(vec3.x, transform.position.y, vec3.z)).normalized * knuckBackP, ForceMode.Impulse);
+            isStuned = true;
+
+        }
+        public void StunEnd()
+        {
+            GetComponent<CharacterController>().enabled = true;
+            Invoke("ProtectEnd", 0.5f);
+            isStuned = false;
+        }
+
+        public void ProtectEnd()
+        {
+            invincibility = false;
+        }
+
+        public void SlowStart()
+        {
+            MoveSpeed = 1.0f;
+            SprintSpeed = 2.5f;
+            SpeedChangeRate = 5.0f;
+        }
+        public void SlowEnd()
+        {
+            MoveSpeed = 2.0f;
+            SprintSpeed = 5.335f;
+            SpeedChangeRate = 10.0f;
         }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections;
+using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -6,6 +7,7 @@ public class FirstBossAnim : MonoBehaviour
 {
     private NavMeshAgent Nav;
     public Animator animator;
+    public AnimatorController secondPhaseAnim;//second phase animator
     private float vel;
     public float[] animLen;
     public int nowAtkNum;
@@ -43,5 +45,16 @@ public class FirstBossAnim : MonoBehaviour
         animator.SetFloat("Speed", Mathf.Epsilon);
         animator.SetTrigger("Attack");
         animator.SetInteger("AtkNum", nowAtkNum = Random.Range(1, 5));
+    }
+
+    public void ChangeAnimator()
+    {
+        animator.runtimeAnimatorController = secondPhaseAnim;
+        GetComponent<NavMeshAgent>().enabled = false;
+        GetComponent<SphereCollider>().enabled = false;
+        GetComponent<SecondPattern>().enabled = true;
+        GetComponent<FirstBossSecondPhaseAnim>().enabled = true;
+        GetComponent<BossPattern>().enabled = false;
+        GetComponent<FirstBossAnim>().enabled = false;
     }
 }
