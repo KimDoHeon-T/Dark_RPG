@@ -27,6 +27,8 @@ public class MonsterAI : MonoBehaviour
     private Animator animator;
     public float atkLength;
     public float atkCoolTime;
+
+    public GameObject weapon;
     private void Start()
     {
         animator = GetComponent<Animator>();
@@ -83,7 +85,6 @@ public class MonsterAI : MonoBehaviour
         if (IsPlayerInAttackRange() && playerSpotted && HasLineOfSight() && atkCoolTime <= 0)
         {
             AttackPlayer();
-            Debug.Log("Attacking player...");
         }
         if (atkCoolTime > 0)
         {
@@ -158,7 +159,16 @@ public class MonsterAI : MonoBehaviour
     {
         animator.SetTrigger("Attack");
         agent.isStopped = true;
-        atkCoolTime += atkLength;
-        Debug.Log("Attacking Player!");
+        atkCoolTime += atkLength + 0.5f;
+    }
+
+    public void AttackStart(int power)
+    {
+        weapon.GetComponent<EnemyWeapon>().AttackStart(power);
+    }
+
+    public void AttackEnd()
+    {
+        weapon.GetComponent<EnemyWeapon>().AttackEnd();
     }
 }

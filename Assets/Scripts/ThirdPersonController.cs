@@ -19,6 +19,7 @@ namespace StarterAssets
         [Tooltip("테스트용이라고")]
         public AnimatorOverrideController spearAOC;
         public AnimatorOverrideController origin;//애니메이터 오버라이드 컨트롤러, 테스트용
+        public float hp = 100;
 
         [Header("AnimatorOverrideController")]
         [Tooltip("AnimatorOverrideController 저장용")]
@@ -184,37 +185,36 @@ namespace StarterAssets
 
         private void Update()
         {
-            GroundedCheck();
-            if (!isStuned)
+            if (Input.GetKeyUp(KeyCode.Escape) && inUI == false)
             {
-                if (Input.GetKeyUp(KeyCode.Escape) && inUI == false)
+                inUI = true;
+            }
+            else if (Input.GetKeyUp(KeyCode.Escape) && inUI == true)
+            {
+                inUI = false;
+            }
+            if (!inUI)
+            {
+                if (_atkCoolTime > 0)
                 {
-                    inUI = true;
+                    //Debug.Log("쿨타임 진행중");
+                    GroundedCheck();
+                    Attack();
                 }
-                else if (Input.GetKeyUp(KeyCode.Escape) && inUI == true)
+                else
                 {
-                    inUI = false;
-                }
-                if (!inUI)
-                {
-                    if (_atkCoolTime > 0)
+                    JumpAndGravity();
+                    GroundedCheck();
+                    Move();
+                    Attack();
+                    if (_input.weapon)
                     {
-                        //Debug.Log("쿨타임 진행중");
-                        Attack();
-                    }
-                    else
-                    {
-                        JumpAndGravity();
-                        Move();
-                        Attack();
-                        if (_input.weapon)
-                        {
-                            //_animator.runtimeAnimatorController = spearAOC;//테스트용 무기 교체
-                        }
+                        //_animator.runtimeAnimatorController = spearAOC;//테스트용 무기 교체
                     }
                 }
             }
         }
+
 
         private void CoolTime()
         {
@@ -282,6 +282,7 @@ namespace StarterAssets
             }
             _input.attack = false;//어택 인풋 해제
         }
+
 
         private void LateUpdate()
         {

@@ -52,17 +52,23 @@ public class Weapon : MonoBehaviour
                 mobAnim.SetTrigger("Back Hit");
             }
             mobAnim.SetTrigger("Hit");
+            mobAI.AttackEnd();
+            mob.GetComponent<AudioSource>().Play();
+            mobAI.agent.isStopped = true;
+            mobAI.atkCoolTime += mobAI.atkLength + 0.5f;
             mobAI.atkCoolTime = 0;
             Debug.Log(mob.hp);
         }
         else if (other.tag == "FirstBoss")
         {
-            BossPattern boss = other.gameObject.GetComponent<BossPattern>();
-            if (boss.phase == 1)
+            if (other.gameObject.GetComponent<BossPattern>() != null && other.gameObject.GetComponent<BossPattern>().enabled)
             {
-                boss.shield -= Data.data.atkPower;
+                other.gameObject.GetComponent<BossPattern>().shield -= Data.data.atkPower;
             }
-            Debug.Log(boss.shield);
+            else if (other.gameObject.GetComponent<SecondPattern>() != null && other.gameObject.GetComponent<SecondPattern>().enabled)
+            {
+                other.gameObject.GetComponent<SecondPattern>().hp -= Data.data.atkPower;
+            }
         }
     }
 }

@@ -19,7 +19,6 @@ public class BossPattern : MonoBehaviour
     public float searchRadius = 5f;
     public float searchInterval = 5f;
 
-    public int phase = 1;
     private FirstBossAnim FBA;
     private float atkLen;
     private float lastTime;
@@ -30,6 +29,10 @@ public class BossPattern : MonoBehaviour
 
     [SerializeField] private GameObject voidOrb;
     [SerializeField] private GameObject voidThunder;
+
+    public GameObject weapon;
+
+    public AudioSource[] audio = new AudioSource[2];
 
     private void Start()
     {
@@ -119,9 +122,20 @@ public class BossPattern : MonoBehaviour
     public void OrbOn()
     {
         voidOrb.SetActive(true);
+        audio[0].Play();
     }
     public void KnuckBack()
     {
         playerCharacter.GetComponent<ThirdPersonController>().KnuckBack(transform.position, 5);
+    }
+
+    public void AttackStart(int power)
+    {
+        weapon.GetComponent<EnemyWeapon>().AttackStart(power);
+    }
+
+    public void AttackEnd()
+    {
+        weapon.GetComponent<EnemyWeapon>().AttackEnd();
     }
 }

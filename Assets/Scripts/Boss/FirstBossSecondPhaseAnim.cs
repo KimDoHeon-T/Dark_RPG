@@ -4,7 +4,7 @@ public class FirstBossSecondPhaseAnim : MonoBehaviour
 {
     public Animator animator;
 
-    private void Start()
+    private void OnEnable()
     {
         animator = GetComponent<Animator>();
     }

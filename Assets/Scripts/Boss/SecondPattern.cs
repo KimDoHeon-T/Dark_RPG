@@ -5,7 +5,9 @@ using UnityEngine;
 public class SecondPattern : MonoBehaviour
 {
     [SerializeField] private Transform player;
-    [SerializeField] private Transform[] Anchors = new Transform[4];
+    [SerializeField] private Transform[] Anchors = new Transform[14];
+    private int nextPortal = 0;
+    [SerializeField] private GameObject portalCastingEffect;
     [SerializeField] private FirstBossSecondPhaseAnim FBSA;
 
     private float distance;
@@ -13,14 +15,17 @@ public class SecondPattern : MonoBehaviour
 
     [SerializeField] private GameObject[] Magics = new GameObject[3];
     private List<GameObject> VoidLightning = new List<GameObject>();
+    [SerializeField] private GameObject portal;
 
     private bool isAtk = false;
     private int atkNum = 0;
 
     private bool isAlive = true;
 
+    public float hp;
 
-    private void Start()
+
+    private void OnEnable()
     {
         FBSA = GetComponent<FirstBossSecondPhaseAnim>();
         GetComponent<CapsuleCollider>().enabled = true;
@@ -35,8 +40,9 @@ public class SecondPattern : MonoBehaviour
     {
         while (isAlive)
         {
-            transform.position = Anchors[Random.Range(0, 4)].position;
+            transform.position = Anchors[nextPortal].position;
             yield return new WaitForSeconds(0.01f);
+            portalCastingEffect.SetActive(false);
             transform.LookAt(new Vector3(player.position.x, transform.position.y, player.position.z));
             isAtk = true;
             if (distance < 6f)
@@ -54,7 +60,14 @@ public class SecondPattern : MonoBehaviour
             FBSA.animator.SetInteger("AtkNum", atkNum);
             Attack();
             Debug.Log(atkNum);
-            yield return new WaitForSeconds(AtkLen[atkNum]);
+            yield return new WaitForSeconds(AtkLen[atkNum] - 0.5f);
+            GameObject obj = Instantiate(portal);
+            obj.transform.position = transform.position;
+            nextPortal = Random.Range(0, 14);
+            obj = Instantiate(portal);
+            obj.transform.position = Anchors[nextPortal].position;
+            portalCastingEffect.SetActive(true);
+            yield return new WaitForSeconds(0.5f);
         }
     }
 
@@ -85,6 +98,24 @@ public class SecondPattern : MonoBehaviour
                 VoidLightning.Add(Instantiate(Magics[atkNum].gameObject));
                 VoidLightning[VoidLightning.Count - 1].transform.position = player.position + new Vector3(0, 0.01f, 0); break;
         }
+    }
 
+    private void Update()
+    {
+        Debug.Log(hp);
+        if (hp <= 0)
+        {
+            FBSA.animator.SetTrigger("Die");
+        }
+    }
+
+    public void Die()
+    {
+        FBSA.animator.enabled = false;
+        StopCoroutine("Teleportation");
+        StopCoroutine("CalDistance");
+        GetComponent<SecondPattern>().enabled = false;
+        GetComponent<FirstBossSecondPhaseAnim>().enabled = false;
+        GetComponent<CapsuleCollider>().enabled = false;
     }
 }

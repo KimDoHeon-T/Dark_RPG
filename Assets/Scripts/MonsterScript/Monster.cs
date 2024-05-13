@@ -12,6 +12,7 @@ public class Monster : MonoBehaviour
         if (hp <= 0)
         {
             GetComponent<Animator>().SetTrigger("Death");
+            GetComponent<MonsterAI>().enabled = false;
         }
     }
 

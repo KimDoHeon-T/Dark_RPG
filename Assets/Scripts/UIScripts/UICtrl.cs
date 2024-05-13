@@ -9,7 +9,7 @@ public class UICtrl : MonoBehaviour
     [SerializeField] private GameObject mainMenu;
     [SerializeField] private GameObject[] ProfCanArray = new GameObject[2];//각 무기별 캔버스 저장소
     [SerializeField] private GameObject[] SwordTypeArray = new GameObject[2];//검의 타입별 캔버스 저장소
-    [SerializeField] private GameObject[] SpearTypeArray = new GameObject[2];//검의 타입별 캔버스 저장소
+    [SerializeField] private GameObject[] SpearTypeArray = new GameObject[2];//창의 타입별 캔버스 저장소
     private GameObject[][] CanArray = new GameObject[2][];
     private int canNum = 0;
     private int profNum;
@@ -77,8 +77,8 @@ public class UICtrl : MonoBehaviour
     {
         if (Input.GetKeyUp(KeyCode.Escape))
             MainMenuCtrl();
-        if (Input.GetKeyUp(KeyCode.Tab))
-            EquipmentWindowOpen();
+        /*if (Input.GetKeyUp(KeyCode.Tab))
+            EquipmentWindowOpen();*/
 
     }
 
@@ -106,7 +106,7 @@ public class UICtrl : MonoBehaviour
         }
     }
 
-    private void EquipmentWindowOpen()
+    /*private void EquipmentWindowOpen()
     {
         if (EquipmentWindow.activeSelf)
         {
@@ -121,14 +121,14 @@ public class UICtrl : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         }
-    }
+    }*/
 
-    public void WeaponChange(int weaponNum)
+    /*public void WeaponChange(int weaponNum)
     {
         Data.data.nowWeapon = weaponNum;
         playerAnimator.runtimeAnimatorController = animators[weaponNum];
         Debug.Log(Data.data.nowWeapon);
-    }
+    }*/
 
     public void Btnclick(GameObject can)
     {
@@ -162,22 +162,26 @@ public class UICtrl : MonoBehaviour
 
     public void SaveCombo()
     {
+        Debug.Log(ComboRam.Count);
         if (ComboRam.Count > 0)
+        {
             Data.data.ComboList[Data.data.nowWeapon] = ComboRam.ToList();
+            Debug.Log("alskdjflk");
+        }
         switch (Data.data.ComboList[Data.data.nowWeapon].Count)
         {
             case 1:
-                animators[Data.data.nowWeapon]["FirstAttack"] = AtkAnimArray[Data.data.nowWeapon][int.Parse(Data.data.ComboList[Data.data.nowWeapon][0].Substring(2))];
+                animators[Data.data.nowWeapon + 1]["FirstAttack"] = AtkAnimArray[Data.data.nowWeapon + 1][int.Parse(Data.data.ComboList[Data.data.nowWeapon][0].Substring(2))];
                 break;
             case 2:
-                animators[Data.data.nowWeapon]["FirstAttack"] = AtkAnimArray[Data.data.nowWeapon][int.Parse(Data.data.ComboList[Data.data.nowWeapon][0].Substring(2))];
-                animators[Data.data.nowWeapon]["SecondAttack"] = AtkAnimArray[Data.data.nowWeapon][int.Parse(Data.data.ComboList[Data.data.nowWeapon][1].Substring(2))];
+                animators[Data.data.nowWeapon + 1]["FirstAttack"] = AtkAnimArray[Data.data.nowWeapon + 1][int.Parse(Data.data.ComboList[Data.data.nowWeapon][0].Substring(2))];
+                animators[Data.data.nowWeapon + 1]["SecondAttack"] = AtkAnimArray[Data.data.nowWeapon + 1][int.Parse(Data.data.ComboList[Data.data.nowWeapon][1].Substring(2))];
                 break;
             case 3:
-                animators[Data.data.nowWeapon]["FirstAttack"] = AtkAnimArray[Data.data.nowWeapon][int.Parse(Data.data.ComboList[Data.data.nowWeapon][0].Substring(2))];
-                animators[Data.data.nowWeapon]["SecondAttack"] = AtkAnimArray[Data.data.nowWeapon][int.Parse(Data.data.ComboList[Data.data.nowWeapon][1].Substring(2))];
-                animators[Data.data.nowWeapon]["ThirdAttack"] = AtkAnimArray[Data.data.nowWeapon][int.Parse(Data.data.ComboList[Data.data.nowWeapon][2].Substring(2))];
+                animators[Data.data.nowWeapon + 1]["FirstAttack"] = AtkAnimArray[Data.data.nowWeapon + 1][int.Parse(Data.data.ComboList[Data.data.nowWeapon][0].Substring(2))];
+                animators[Data.data.nowWeapon + 1]["SecondAttack"] = AtkAnimArray[Data.data.nowWeapon + 1][int.Parse(Data.data.ComboList[Data.data.nowWeapon][1].Substring(2))];
+                animators[Data.data.nowWeapon + 1]["ThirdAttack"] = AtkAnimArray[Data.data.nowWeapon + 1][int.Parse(Data.data.ComboList[Data.data.nowWeapon][2].Substring(2))];
                 break;
         }
-    }
+    }//+1들은 임시방편
 }
