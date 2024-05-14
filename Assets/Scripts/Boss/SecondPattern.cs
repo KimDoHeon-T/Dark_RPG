@@ -104,7 +104,7 @@ public class SecondPattern : MonoBehaviour
 
     private void Update()
     {
-        hpBar.fillAmount = hp / 100.0f;
+        hpBar.fillAmount = hp / 20.0f;
         if (hp <= 0)
         {
             FBSA.animator.SetTrigger("Die");

@@ -1,5 +1,4 @@
 using System.Collections;
-using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,7 +6,7 @@ public class FirstBossAnim : MonoBehaviour
 {
     private NavMeshAgent Nav;
     public Animator animator;
-    public AnimatorController secondPhaseAnim;//second phase animator
+    public RuntimeAnimatorController secondPhaseAnim;//second phase animator
     private float vel;
     public float[] animLen;
     public int nowAtkNum;

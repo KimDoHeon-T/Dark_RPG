@@ -539,10 +539,10 @@ namespace StarterAssets
             if (die)
             {
                 GetComponent<Animator>().enabled = false;
-                GetComponent<CharacterController>().enabled = false;  
-                GetComponent<ThirdPersonController>().enabled = false;  
-                GetComponent<BasicRigidBodyPush>().enabled = false; 
-                GetComponent<StarterAssetsInputs>().enabled = false;    
+                GetComponent<CharacterController>().enabled = false;
+                GetComponent<ThirdPersonController>().enabled = false;
+                GetComponent<BasicRigidBodyPush>().enabled = false;
+                GetComponent<StarterAssetsInputs>().enabled = false;
                 GetComponent<PlayerInput>().enabled = false;
             }
         }
