@@ -2,6 +2,7 @@
 using UnityEngine;
 #if ENABLE_INPUT_SYSTEM && STARTER_ASSETS_PACKAGES_CHECKED
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 #endif
 
 /* Note: animations are called via the controller for both the character and capsule using animator null checks
@@ -20,6 +21,8 @@ namespace StarterAssets
         public AnimatorOverrideController spearAOC;
         public AnimatorOverrideController origin;//애니메이터 오버라이드 컨트롤러, 테스트용
         public float hp = 100;
+        public Image hpBar;
+        private bool die = false;
 
         [Header("AnimatorOverrideController")]
         [Tooltip("AnimatorOverrideController 저장용")]
@@ -185,6 +188,7 @@ namespace StarterAssets
 
         private void Update()
         {
+            hpBar.fillAmount = hp / 100.0f;
             if (Input.GetKeyUp(KeyCode.Escape) && inUI == false)
             {
                 inUI = true;
@@ -527,7 +531,20 @@ namespace StarterAssets
             _animator.SetTrigger("KnuckBack");
             GetComponent<Rigidbody>().AddForce((transform.position - new Vector3(vec3.x, transform.position.y, vec3.z)).normalized * knuckBackP, ForceMode.Impulse);
             isStuned = true;
+            hp -= 10;
+        }
 
+        public void Die()
+        {
+            if (die)
+            {
+                GetComponent<Animator>().enabled = false;
+                GetComponent<CharacterController>().enabled = false;  
+                GetComponent<ThirdPersonController>().enabled = false;  
+                GetComponent<BasicRigidBodyPush>().enabled = false; 
+                GetComponent<StarterAssetsInputs>().enabled = false;    
+                GetComponent<PlayerInput>().enabled = false;
+            }
         }
         public void StunEnd()
         {

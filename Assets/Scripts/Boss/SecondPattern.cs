@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SecondPattern : MonoBehaviour
 {
@@ -22,7 +23,8 @@ public class SecondPattern : MonoBehaviour
 
     private bool isAlive = true;
 
-    public float hp;
+    public float hp = 20;
+    public Image hpBar;
 
 
     private void OnEnable()
@@ -102,7 +104,7 @@ public class SecondPattern : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(hp);
+        hpBar.fillAmount = hp / 100.0f;
         if (hp <= 0)
         {
             FBSA.animator.SetTrigger("Die");

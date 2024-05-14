@@ -2,6 +2,7 @@ using StarterAssets;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class BossPattern : MonoBehaviour
 {
@@ -23,7 +24,8 @@ public class BossPattern : MonoBehaviour
     private float atkLen;
     private float lastTime;
 
-    public float shield = 20;
+    public float shield = 100;
+    public Image shieldBar;
     [SerializeField] private GameObject shieldpar;
     [SerializeField] private GameObject shieldbreak;
 
@@ -86,6 +88,7 @@ public class BossPattern : MonoBehaviour
     private void Update()
     {
         FBA.animator.SetFloat("Shield", shield);
+        shieldBar.fillAmount = shield / 100.0f;
         lastTime = atkLen;
         atkLen -= Time.deltaTime;
         if (shield <= 0)
